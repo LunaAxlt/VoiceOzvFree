@@ -2,8 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Voice Studio | Василиса AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>LunaAxlt Studio Games — Техническое обслуживание</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,380 +14,607 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #000000;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 30% 40%, #0a0c1a, #03050b);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
-        .app {
+        /* Анимированный фон с частицами */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
-            background: #0c0c0e;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
 
-        .status-bar {
-            padding: 12px 20px 6px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: #8e8e93;
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(76,111,255,0.4), rgba(155,77,255,0.2));
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+            pointer-events: none;
         }
 
-        .header {
-            padding: 20px 24px 12px;
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
-        .header h1 {
-            font-size: 2rem;
+        /* Луна эффект */
+        .moon-glow {
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(100,80,200,0.2), transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        /* Основной контейнер */
+        .maintenance-container {
+            position: relative;
+            z-index: 10;
+            max-width: 650px;
+            width: 100%;
+            background: rgba(10, 12, 26, 0.75);
+            backdrop-filter: blur(20px);
+            border-radius: 64px;
+            padding: 48px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(76,111,255,0.2);
+            border: 1px solid rgba(76,111,255,0.3);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        /* Логотип студии */
+        .studio-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            font-size: 70px;
+            background: linear-gradient(135deg, #4C6FFF, #9B4DFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .studio-name {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #B0B8FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-top: 8px;
+        }
+
+        .studio-tag {
+            font-size: 14px;
+            color: #8E94B2;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Основной баннер */
+        .maintenance-badge {
+            background: linear-gradient(135deg, #FF4D4D, #B00020);
+            border-radius: 100px;
+            padding: 8px 24px;
+            display: inline-block;
+            margin-bottom: 32px;
             font-weight: 700;
-            background: linear-gradient(135deg, #ffffff 0%, #a88bff 100%);
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: white;
+            box-shadow: 0 0 20px rgba(255,77,77,0.3);
+        }
+
+        /* Заголовок */
+        .title {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF, #C0C8FF);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        .header p {
-            color: #8e8e93;
-            font-size: 0.85rem;
-            margin-top: 6px;
+        @media (max-width: 550px) {
+            .title {
+                font-size: 28px;
+            }
+            .maintenance-container {
+                padding: 32px 20px;
+                border-radius: 48px;
+            }
+            .date-card {
+                padding: 20px 16px !important;
+            }
+            .countdown-number {
+                font-size: 32px !important;
+                min-width: 60px !important;
+            }
+            .countdown-item {
+                min-width: 70px !important;
+            }
         }
 
-        .avatar-section {
-            display: flex;
-            justify-content: center;
-            margin: 16px 0 8px;
+        /* Таймер обратного отсчета */
+        .countdown-section {
+            background: rgba(26, 30, 38, 0.7);
+            border-radius: 48px;
+            padding: 8px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(76,111,255,0.3);
         }
 
-        .avatar-circle {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(145deg, #2a1e4a, #1a0f3a);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #a88bff;
-        }
-
-        .avatar-circle span {
-            font-size: 3.5rem;
-        }
-
-        .voice-name {
+        .countdown-title {
             text-align: center;
-            margin-top: 12px;
+            color: #9B4DFF;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            margin-top: 8px;
         }
 
-        .voice-name h2 {
-            color: white;
-            font-size: 1.5rem;
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 8px 16px 24px;
         }
 
-        .voice-name p {
-            color: #a88bff;
-            font-size: 0.7rem;
+        .countdown-item {
+            text-align: center;
+            background: #0A0C12;
+            border-radius: 28px;
+            padding: 12px 8px;
+            min-width: 85px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(76,111,255,0.3);
         }
 
-        .content {
-            flex: 1;
+        .countdown-number {
+            font-size: 44px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4C6FFF, #9B4DFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            color: #8E94B2;
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Дата */
+        .date-card {
+            background: linear-gradient(135deg, rgba(76,111,255,0.1), rgba(155,77,255,0.05));
+            border-radius: 32px;
             padding: 20px 24px;
+            text-align: center;
+            margin-bottom: 32px;
+            border: 1px dashed rgba(76,111,255,0.4);
         }
 
-        .input-card {
-            background: #1c1c1e;
-            border-radius: 28px;
-            padding: 4px;
-            margin-bottom: 24px;
+        .date-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
         }
 
-        textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            padding: 18px 20px;
-            font-size: 1rem;
-            color: white;
-            font-family: inherit;
-            resize: none;
-            outline: none;
+        .date-text i {
+            color: #FFD966;
+            margin-right: 8px;
         }
 
-        .settings-card {
-            background: #1c1c1e;
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 24px;
+        .date-note {
+            color: #8E94B2;
+            font-size: 14px;
+            margin-top: 8px;
         }
 
-        .setting-item {
-            margin-bottom: 20px;
+        /* Прогресс-бар */
+        .progress-section {
+            margin-bottom: 32px;
         }
 
-        .setting-label {
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            color: #aeaeb2;
-            font-size: 0.8rem;
+            color: #B0B8D0;
+            font-size: 14px;
             margin-bottom: 8px;
         }
 
-        input[type="range"] {
-            width: 100%;
-            height: 4px;
-            -webkit-appearance: none;
-            background: #2c2c2e;
-            border-radius: 4px;
+        .progress-bar-bg {
+            background: #1A1E26;
+            border-radius: 30px;
+            height: 8px;
+            overflow: hidden;
         }
 
-        input[type="range"]::-webkit-slider-thumb {
-            width: 20px;
-            height: 20px;
-            background: #a88bff;
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #4C6FFF, #9B4DFF);
+            border-radius: 30px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 8px rgba(76,111,255,0.5);
+        }
+
+        /* Анимация загрузки */
+        @keyframes shine {
+            0% { background-position: -100% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 12px;
+            color: #5A607A;
+        }
+
+        /* Колокольчик */
+        .notification-bell {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1A1E26;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            cursor: pointer;
-            -webkit-appearance: none;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .btn-primary {
-            flex: 2;
-            background: #a88bff;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .btn-secondary {
-            flex: 1;
-            background: #2c2c2e;
-            border: none;
-            padding: 16px 16px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .site-block {
-            background: #1c1c1e;
-            border-radius: 24px;
-            padding: 16px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(76,111,255,0.4);
+            transition: 0.2s;
         }
 
-        .site-block span {
-            color: #aeaeb2;
-            font-size: 0.85rem;
+        .notification-bell i {
+            font-size: 24px;
+            color: #FFD966;
         }
 
-        .site-link {
-            background: #2c2c2e;
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: #a88bff;
-            text-decoration: none;
-            font-size: 0.8rem;
+        .notification-bell:active {
+            transform: scale(0.92);
         }
 
-        .status {
-            background: #1c1c1e;
-            border-radius: 24px;
-            padding: 12px 16px;
-            font-size: 0.75rem;
-            color: #8e8e93;
-            text-align: center;
+        .tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: #0F1119;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            border: 1px solid #4C6FFF;
         }
 
-        .footer {
-            padding: 20px 24px;
-            text-align: center;
-            border-top: 1px solid #1c1c1e;
-            margin-top: auto;
+        .notification-bell:hover .tooltip {
+            opacity: 1;
         }
 
-        .footer p {
-            color: #5e5e66;
-            font-size: 0.7rem;
-        }
-
-        .footer a {
-            color: #a88bff;
-            text-decoration: none;
+        /* Адаптация для телефона */
+        @media (max-width: 480px) {
+            .notification-bell {
+                width: 48px;
+                height: 48px;
+                bottom: 20px;
+                right: 20px;
+            }
+            .notification-bell i {
+                font-size: 20px;
+            }
+            .tooltip {
+                font-size: 10px;
+                bottom: 60px;
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <div class="status-bar">
-        <span>Voice Studio</span>
-        <span>🎙️</span>
-    </div>
 
-    <div class="header">
-        <h1>Василиса</h1>
-        <p>бесплатный сайт для озвучки</p>
-    </div>
+<div class="particles" id="particlesContainer"></div>
+<div class="moon-glow"></div>
 
-    <div class="avatar-section">
-        <div class="avatar-circle">
-            <span>🎙️</span>
+<div class="maintenance-container">
+    <div class="studio-header">
+        <div class="logo-icon">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-gamepad" style="margin-left: -12px;"></i>
         </div>
-    </div>
-    <div class="voice-name">
-        <h2>Василиса</h2>
-        <p>AI голос</p>
+        <h1 class="studio-name">LunaAxlt Studio</h1>
+        <div class="studio-tag">GAMES · INNOVATION · UNIVERSE</div>
     </div>
 
-    <div class="content">
-        <div class="input-card">
-            <textarea id="textInput" rows="3" placeholder="Введите текст для озвучки...">Привет! Это тестовая озвучка. Текст можно изменить.</textarea>
+    <div>
+        <div class="maintenance-badge">
+            <i class="fas fa-tools"></i> ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ
         </div>
+        <h2 class="title">
+            Все сервисы на обновлении
+        </h2>
+    </div>
 
-        <div class="settings-card">
-            <div class="setting-item">
-                <div class="setting-label">
-                    <span>⚡ Скорость</span>
-                    <span id="rateValue">1.0</span>
-                </div>
-                <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.05" value="1.0">
+    <!-- Таймер обратного отсчета до 30 марта 2026 -->
+    <div class="countdown-section">
+        <div class="countdown-title">
+            <i class="fas fa-hourglass-half"></i> ДО ЗАВЕРШЕНИЯ ОБСЛУЖИВАНИЯ
+        </div>
+        <div class="countdown-timer" id="countdownTimer">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Дней</div>
             </div>
-            <div class="setting-item">
-                <div class="setting-label">
-                    <span>🎵 Высота</span>
-                    <span id="pitchValue">1.0</span>
-                </div>
-                <input type="range" id="pitchSlider" min="0.5" max="1.5" step="0.05" value="1.0">
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Часов</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Минут</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Секунд</div>
             </div>
         </div>
+    </div>
 
-        <div class="buttons">
-            <button class="btn-primary" id="speakBtn">🎙️ Озвучить</button>
-            <button class="btn-secondary" id="previewBtn">🔊 Пример</button>
-            <button class="btn-secondary" id="stopBtn">⏹️ Стоп</button>
+    <!-- Дата -->
+    <div class="date-card">
+        <div class="date-text">
+            <i class="fas fa-calendar-alt"></i> 30 марта 2026 года
         </div>
-
-        <div class="site-block">
-            <span>🌙 LunaAxlt Studio Games</span>
-            <a href="https://LunaAxlt.github.io/StudiosGames/" class="site-link" target="_blank">Сайт →</a>
-        </div>
-
-        <div id="statusMsg" class="status">
-            💜 Нажми "Озвучить"
+        <div class="date-note">
+            ⚡ Все сервисы возобновят работу в 00:00 по московскому времени
         </div>
     </div>
 
-    <div class="footer">
-        <p>разработано <a href="https://LunaAxlt.github.io/StudiosGames/" target="_blank">LunaAxlt Studio Games</a></p>
+    <!-- Прогресс обслуживания (динамический) -->
+    <div class="progress-section">
+        <div class="progress-label">
+            <span><i class="fas fa-chart-line"></i> Прогресс обновления</span>
+            <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label" style="margin-top: 8px; font-size: 12px;">
+            <span>🔧 Подготовка серверов</span>
+            <span>✨ Новый контент</span>
+        </div>
     </div>
+
+    <footer>
+        <p>© 2026 LunaAxlt Studio Games — Мы делаем игры, которые вдохновляют.</p>
+        <p style="margin-top: 6px;">Скоро вернёмся с обновлениями</p>
+    </footer>
+</div>
+
+<div class="notification-bell" id="notifyBell">
+    <i class="fas fa-bell"></i>
+    <div class="tooltip">Уведомить о запуске</div>
 </div>
 
 <script>
-    // ============================================================
-    // ТЕХНИЧЕСКИЙ ПЕРЕРЫВ — МЕНЯЙ ТОЛЬКО ЗДЕСЬ
-    // 0 = голос работает | 1 = голос отключен
-    // ============================================================
-    let TECH_BREAK_ACTIVE = 0;
+    // Дата окончания обслуживания: 30 марта 2026 года 00:00:00 по МСК
+    const targetDate = new Date(2026, 2, 30, 0, 0, 0); // Март = 2 (0-index)
     
-    // ============================================================
-    // ГОЛОС ВАСИЛИСА — ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ
-    // ============================================================
-    
-    const textInput = document.getElementById('textInput');
-    const rateSlider = document.getElementById('rateSlider');
-    const pitchSlider = document.getElementById('pitchSlider');
-    const rateValue = document.getElementById('rateValue');
-    const pitchValue = document.getElementById('pitchValue');
-    const speakBtn = document.getElementById('speakBtn');
-    const previewBtn = document.getElementById('previewBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const statusDiv = document.getElementById('statusMsg');
-    
-    let currentUtterance = null;
-    
-    // Обновление значений
-    rateSlider.addEventListener('input', () => {
-        rateValue.textContent = parseFloat(rateSlider.value).toFixed(2);
-    });
-    pitchSlider.addEventListener('input', () => {
-        pitchValue.textContent = parseFloat(pitchSlider.value).toFixed(2);
-    });
-    
-    // Функция озвучки
-    function speakText(text) {
-        // Технический перерыв
-        if (TECH_BREAK_ACTIVE === 1) {
-            statusDiv.innerHTML = '🔧 Технический перерыв';
+    // Функция обновления таймера
+    function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
+        
+        if (diff <= 0) {
+            // Обслуживание завершено
+            document.getElementById('days').innerText = '00';
+            document.getElementById('hours').innerText = '00';
+            document.getElementById('minutes').innerText = '00';
+            document.getElementById('seconds').innerText = '00';
+            document.querySelector('.countdown-title').innerHTML = '<i class="fas fa-check-circle"></i> ОБСЛУЖИВАНИЕ ЗАВЕРШЕНО!';
+            document.querySelector('.maintenance-badge').innerHTML = '<i class="fas fa-check"></i> ВСЕ СЕРВИСЫ РАБОТАЮТ';
+            document.querySelector('.maintenance-badge').style.background = 'linear-gradient(135deg, #00B894, #00A86B)';
+            clearInterval(countdownInterval);
             return;
         }
         
-        const targetText = text || textInput.value.trim();
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        if (!targetText) {
-            statusDiv.innerHTML = '✏️ Введите текст';
-            return;
+        document.getElementById('days').innerText = days.toString().padStart(2, '0');
+        document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+        
+        // Обновление прогресса (чем ближе дата, тем выше процент)
+        const startDate = new Date(2025, 11, 15, 0, 0, 0); // условное начало работ 15 декабря 2025
+        const totalDuration = targetDate - startDate;
+        const elapsed = now - startDate;
+        let percent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+        if (isNaN(percent)) percent = 0;
+        const progressPercentSpan = document.getElementById('progressPercent');
+        const progressFill = document.getElementById('progressFill');
+        if (progressPercentSpan && progressFill) {
+            progressPercentSpan.innerText = Math.floor(percent) + '%';
+            progressFill.style.width = percent + '%';
         }
-        
-        const rate = parseFloat(rateSlider.value);
-        const pitch = parseFloat(pitchSlider.value);
-        
-        // Останавливаем предыдущее
-        window.speechSynthesis.cancel();
-        
-        const utterance = new SpeechSynthesisUtterance(targetText);
-        utterance.rate = rate;
-        utterance.pitch = pitch;
-        
-        utterance.onstart = () => {
-            statusDiv.innerHTML = `🎙️ Говорит...`;
-        };
-        
-        utterance.onend = () => {
-            statusDiv.innerHTML = `✅ Готово`;
-            currentUtterance = null;
-        };
-        
-        utterance.onerror = () => {
-            statusDiv.innerHTML = `❌ Ошибка`;
-            currentUtterance = null;
-        };
-        
-        currentUtterance = utterance;
-        window.speechSynthesis.speak(utterance);
     }
     
-    function speakMain() { speakText(); }
-    function speakExample() { speakText("Привет! Это бесплатный сайт для озвучки текста голосом."); }
-    function stopSpeaking() { window.speechSynthesis.cancel(); currentUtterance = null; statusDiv.innerHTML = '⏹️ Остановлено'; }
+    let countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
     
-    speakBtn.addEventListener('click', speakMain);
-    previewBtn.addEventListener('click', speakExample);
-    stopBtn.addEventListener('click', stopSpeaking);
-    
-    // Проверка поддержки
-    if (!window.speechSynthesis) {
-        statusDiv.innerHTML = '❌ Браузер не поддерживает голос';
+    // Генерация фоновых частиц
+    function createParticles() {
+        const container = document.getElementById('particlesContainer');
+        const particleCount = 80;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = Math.random() * 8 + 5 + 's';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
+            container.appendChild(particle);
+        }
     }
+    createParticles();
+    
+    // Уведомление (колокольчик)
+    const bell = document.getElementById('notifyBell');
+    if (bell) {
+        bell.addEventListener('click', () => {
+            // Создаем toast уведомление
+            const toast = document.createElement('div');
+            toast.innerText = '🔔 Мы сообщим, когда всё будет готово! Следите за новостями.';
+            toast.style.position = 'fixed';
+            toast.style.bottom = '100px';
+            toast.style.right = '20px';
+            toast.style.backgroundColor = '#1A1E26';
+            toast.style.color = '#FFFFFF';
+            toast.style.padding = '12px 20px';
+            toast.style.borderRadius = '30px';
+            toast.style.fontSize = '14px';
+            toast.style.zIndex = '1000';
+            toast.style.borderLeft = '4px solid #4C6FFF';
+            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+            toast.style.backdropFilter = 'blur(8px)';
+            toast.style.fontFamily = 'Inter, sans-serif';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+            
+            // Анимация колокольчика
+            bell.style.transform = 'scale(0.9)';
+            setTimeout(() => { bell.style.transform = ''; }, 150);
+        });
+    }
+    
+    // Добавляем анимированный заголовок
+    const style = document.createElement('style');
+    style.textContent = `
+        .maintenance-container {
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .countdown-item {
+            transition: transform 0.2s;
+        }
+        .countdown-item:hover {
+            transform: scale(1.02);
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Динамическое обновление заголовка вкладки
+    function updateTabTitle() {
+        const now = new Date();
+        const diff = targetDate - now;
+        if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.title = `🔧 Обновление: ${days} дн. | LunaAxlt Studio`;
+        } else {
+            document.title = `✨ LunaAxlt Studio — Игры доступны!`;
+        }
+    }
+    setInterval(updateTabTitle, 60000);
+    updateTabTitle();
+    
+    // Эффект мерцания для логотипа
+    setInterval(() => {
+        const logoIcon = document.querySelector('.logo-icon');
+        if (logoIcon) {
+            logoIcon.style.textShadow = '0 0 15px rgba(76,111,255,0.5)';
+            setTimeout(() => {
+                if (logoIcon) logoIcon.style.textShadow = '';
+            }, 300);
+        }
+    }, 3000);
+    
+    // Консольное приветствие
+    console.log('%c✨ LunaAxlt Studio Games ✨', 'color: #9B4DFF; font-size: 16px; font-weight: bold;');
+    console.log('%cТехническое обслуживание до 30 марта 2026. Готовим нечто невероятное!', 'color: #4C6FFF; font-size: 12px;');
 </script>
 </body>
 </html>
