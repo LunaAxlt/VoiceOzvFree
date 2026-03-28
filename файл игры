@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клюквенный кликер 🫐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a3f2c;
+            padding: 10px;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(145deg, #2b5a3a, #1e4628);
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.5), inset 0 0 20px #3a7740;
+            border: 3px solid #4c8b4c;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Болотный фон с пузырьками */
+        .swamp-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, #3f7840, #1d4a1d);
+            z-index: 0;
+            opacity: 0.8;
+        }
+        
+        .swamp-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, #5f9e5f 3px, transparent 3px),
+                radial-gradient(circle at 30% 70%, #5f9e5f 4px, transparent 4px),
+                radial-gradient(circle at 70% 40%, #5f9e5f 5px, transparent 5px),
+                radial-gradient(circle at 85% 80%, #5f9e5f 3px, transparent 3px),
+                radial-gradient(circle at 45% 90%, #5f9e5f 6px, transparent 6px);
+            background-size: 100px 100px;
+            opacity: 0.3;
+            animation: bubbles 8s infinite linear;
+        }
+        
+        @keyframes bubbles {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-30px) rotate(5deg); }
+        }
+        
+        /* Камыши по краям */
+        .swamp-bg::after {
+            content: '🌿🌾🌿';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 40px;
+            color: #376d37;
+            opacity: 0.3;
+            transform: rotate(180deg);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .game-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Верхняя панель со счётчиком */
+        .cranberry-header {
+            background: rgba(46, 61, 38, 0.9);
+            backdrop-filter: blur(5px);
+            border-radius: 60px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid #8baF63;
+            box-shadow: 0 5px 0 #2d462d, inset 0 0 15px #9fcc7b;
+        }
+        
+        .cranberry-icon {
+            font-size: 40px;
+            filter: drop-shadow(0 4px 2px #3b1e1e);
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .counter {
+            background: #2b2b1a;
+            padding: 10px 25px;
+            border-radius: 40px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px #ff4444, 0 2px 0 #8b0000;
+            box-shadow: inset 0 2px 5px #00000055, 0 5px 0 #1a2f1a;
+            border: 1px solid #b88a3d;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .counter span {
+            font-size: 20px;
+            color: #ffb347;
+        }
+        
+        /* Клюква */
+        .cranberry-container {
+            text-align: center;
+            padding: 20px 0;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .cranberry {
+            font-size: 180px;
+            display: inline-block;
+            transition: transform 0.1s ease;
+            filter: drop-shadow(0 20px 15px #1e3a1e);
+            cursor: pointer;
+            animation: bob 2s infinite ease-in-out;
+            position: relative;
+            line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        
+        @keyframes bob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-5px) rotate(5deg); }
+        }
+        
+        .cranberry:active {
+            transform: scale(0.85) rotate(-10deg);
+        }
+        
+        /* Эффект брызг при нажатии */
+        .splash-effect {
+            position: absolute;
+            pointer-events: none;
+            font-size: 40px;
+            animation: splash 0.5s ease-out forwards;
+            z-index: 10;
+        }
+        
+        @keyframes splash {
+            0% { opacity: 1; transform: scale(0.5) translateY(0); }
+            100% { opacity: 0; transform: scale(2) translateY(-50px); }
+        }
+        
+        /* Информационная панель */
+        .stats-panel {
+            background: rgba(56, 80, 48, 0.95);
+            backdrop-filter: blur(5px);
+            border-radius: 30px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid #6f9e4f;
+            box-shadow: inset 0 0 15px #acd18b;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            color: #fff4c6;
+            font-size: 16px;
+            text-shadow: 0 2px 0 #2d4a2d;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd966;
+            margin-top: 5px;
+        }
+        
+        /* Улучшения */
+        .upgrades {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .upgrade-btn {
+            flex: 1 1 calc(50% - 10px);
+            background: linear-gradient(145deg, #5b8c4e, #3a6332);
+            border: none;
+            padding: 15px 10px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 1px 0 #1e3a1e;
+            border: 2px solid #aac78d;
+            box-shadow: 0 5px 0 #2b4a2b;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .upgrade-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #2b4a2b;
+        }
+        
+        .upgrade-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.5);
+        }
+        
+        .upgrade-emoji {
+            font-size: 24px;
+        }
+        
+        .upgrade-price {
+            background: #2d2d1a;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .upgrade-level {
+            background: #2e4a2e;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+        
+        /* Кнопка сброса */
+        .reset-btn {
+            background: linear-gradient(145deg, #854040, #5a2e2e);
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            border: 2px solid #cf8f8f;
+            box-shadow: 0 5px 0 #3e2323;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .reset-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #3e2323;
+        }
+        
+        /* Звуковая подсказка */
+        .sound-hint {
+            background: rgba(255,255,200,0.2);
+            border-radius: 20px;
+            padding: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #cdffb8;
+        }
+        
+        /* Адаптация для мобилок */
+        @media (max-width: 400px) {
+            .cranberry {
+                font-size: 140px;
+            }
+            .counter {
+                font-size: 28px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="swamp-bg"></div>
+        
+        <div class="game-content">
+            <!-- Счётчик клюквы -->
+            <div class="cranberry-header">
+                <div class="cranberry-icon">🫐</div>
+                <div class="counter" id="counter">0 <span>клюкв</span></div>
+            </div>
+            
+            <!-- Кликабельная клюква -->
+            <div class="cranberry-container" id="cranberryContainer">
+                <div class="cranberry" id="cranberry" role="button" tabindex="0">
+                    🫐
+                </div>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="stats-panel">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div>👆 За клик</div>
+                        <div class="stat-value" id="perClick">1</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>⚡ В секунду</div>
+                        <div class="stat-value" id="perSecond">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>🏆 Всего</div>
+                        <div class="stat-value" id="totalClicks">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Улучшения -->
+            <div class="upgrades">
+                <button class="upgrade-btn" id="upgradeClick" onclick="buyUpgrade('click')">
+                    <span class="upgrade-emoji">💪👆</span>
+                    <span>Сила клика</span>
+                    <span class="upgrade-price"><span>🫐</span> <span id="clickPrice">10</span></span>
+                    <span class="upgrade-level" id="clickLevel">Ур. 1</span>
+                </button>
+                
+                <button class="upgrade-btn" id="upgradeAuto" onclick="buyUpgrade('auto')">
+                    <span class="upgrade-emoji">⏲️🫐</span>
+                    <span>Авто-сбор</span>
+                    <span class="upgrade-price"><span>🫐</span> <span id="autoPrice">20</span></span>
+                    <span class="upgrade-level" id="autoLevel">Ур. 0</span>
+                </button>
+            </div>
+            
+            <!-- Кнопка сброса -->
+            <button class="reset-btn" onclick="resetGame()">
+                <span>🔄</span> Новая игра на болоте
+            </button>
+            
+            <!-- Подсказка про звук -->
+            <div class="sound-hint" id="soundHint">
+                🔊 Звук включён! Жми на клюкву - услышишь "чвак"!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Игровые переменные
+        let cranberries = 0;
+        let clickPower = 1;
+        let autoCollectors = 0;
+        let totalClicks = 0;
+        
+        // Цены улучшений
+        let clickUpgradePrice = 10;
+        let autoUpgradePrice = 20;
+        
+        // Звук через Web Audio API (работает везде без файлов)
+        let audioCtx = null;
+        let soundEnabled = true;
+        
+        // Инициализация звука
+        function initAudio() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log('Web Audio API не поддерживается');
+                document.getElementById('soundHint').innerHTML = '⚠️ Звук не поддерживается браузером';
+                soundEnabled = false;
+            }
+        }
+        
+        // Воспроизведение звука "чвак"
+        function playSquishSound() {
+            if (!soundEnabled || !audioCtx) return;
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            try {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.1);
+            } catch (e) {
+                // Игнорируем ошибки звука
+            }
+        }
+        
+        // Эффект брызг
+        function createSplash(x, y) {
+            const splash = document.createElement('div');
+            splash.className = 'splash-effect';
+            splash.innerHTML = '💧';
+            splash.style.left = (x - 20) + 'px';
+            splash.style.top = (y - 30) + 'px';
+            splash.style.position = 'absolute';
+            
+            document.querySelector('.cranberry-container').appendChild(splash);
+            
+            setTimeout(() => {
+                splash.remove();
+            }, 500);
+        }
+        
+        // Клик по клюкве
+        function clickCranberry(event) {
+            // Получаем координаты клика для эффекта
+            const rect = event.target.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Добавляем клюкву
+            cranberries += clickPower;
+            totalClicks++;
+            
+            // Визуальные эффекты
+            createSplash(x, y);
+            playSquishSound();
+            
+            // Анимация клюквы
+            const cranberry = document.getElementById('cranberry');
+            cranberry.style.transform = 'scale(0.85) rotate(-10deg)';
+            setTimeout(() => {
+                cranberry.style.transform = '';
+            }, 100);
+            
+            // Обновляем дисплей
+            updateDisplay();
+            
+            // Вибрация на мобилках
+            if (navigator.vibrate) {
+                navigator.vibrate(20);
+            }
+        }
+        
+        // Покупка улучшения
+        function buyUpgrade(type) {
+            if (type === 'click') {
+                if (cranberries >= clickUpgradePrice) {
+                    cranberries -= clickUpgradePrice;
+                    clickPower++;
+                    clickUpgradePrice = Math.floor(clickUpgradePrice * 1.5);
+                    
+                    // Обновляем отображение
+                    document.getElementById('clickPrice').textContent = clickUpgradePrice;
+                    document.getElementById('clickLevel').textContent = `Ур. ${clickPower}`;
+                    
+                    // Звук покупки
+                    playSquishSound();
+                }
+            } else if (type === 'auto') {
+                if (cranberries >= autoUpgradePrice) {
+                    cranberries -= autoUpgradePrice;
+                    autoCollectors++;
+                    autoUpgradePrice = Math.floor(autoUpgradePrice * 1.7);
+                    
+                    // Обновляем отображение
+                    document.getElementById('autoPrice').textContent = autoUpgradePrice;
+                    document.getElementById('autoLevel').textContent = `Ур. ${autoCollectors}`;
+                    
+                    playSquishSound();
+                }
+            }
+            
+            updateDisplay();
+        }
+        
+        // Сброс игры
+        function resetGame() {
+            if (confirm('🔄 Начать новую игру? Вся клюква пропадёт!')) {
+                cranberries = 0;
+                clickPower = 1;
+                autoCollectors = 0;
+                totalClicks = 0;
+                clickUpgradePrice = 10;
+                autoUpgradePrice = 20;
+                
+                // Обновляем UI
+                document.getElementById('clickPrice').textContent = clickUpgradePrice;
+                document.getElementById('autoPrice').textContent = autoUpgradePrice;
+                document.getElementById('clickLevel').textContent = 'Ур. 1';
+                document.getElementById('autoLevel').textContent = 'Ур. 0';
+                
+                updateDisplay();
+                
+                playSquishSound();
+            }
+        }
+        
+        // Обновление интерфейса
+        function updateDisplay() {
+            document.getElementById('counter').innerHTML = Math.floor(cranberries) + ' <span>клюкв</span>';
+            document.getElementById('perClick').textContent = clickPower;
+            document.getElementById('perSecond').textContent = autoCollectors;
+            document.getElementById('totalClicks').textContent = totalClicks;
+            
+            // Блокируем кнопки если не хватает клюквы
+            document.getElementById('upgradeClick').disabled = cranberries < clickUpgradePrice;
+            document.getElementById('upgradeAuto').disabled = cranberries < autoUpgradePrice;
+        }
+        
+        // Автоматический сбор
+        setInterval(() => {
+            if (autoCollectors > 0) {
+                cranberries += autoCollectors;
+                updateDisplay();
+                
+                // Маленький звук для авто-сбора (тише)
+                if (soundEnabled && audioCtx) {
+                    try {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        oscillator.type = 'sine';
+                        oscillator.frequency.value = 100;
+                        gainNode.gain.value = 0.1;
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        oscillator.start();
+                        oscillator.stop(audioCtx.currentTime + 0.05);
+                    } catch (e) {}
+                }
+            }
+        }, 1000);
+        
+        // Сохранение в localStorage
+        setInterval(() => {
+            const saveData = {
+                cranberries,
+                clickPower,
+                autoCollectors,
+                totalClicks,
+                clickUpgradePrice,
+                autoUpgradePrice
+            };
+            localStorage.setItem('cranberryGame', JSON.stringify(saveData));
+        }, 5000);
+        
+        // Загрузка сохранения
+        function loadGame() {
+            const save = localStorage.getItem('cranberryGame');
+            if (save) {
+                try {
+                    const data = JSON.parse(save);
+                    cranberries = data.cranberries || 0;
+                    clickPower = data.clickPower || 1;
+                    autoCollectors = data.autoCollectors || 0;
+                    totalClicks = data.totalClicks || 0;
+                    clickUpgradePrice = data.clickUpgradePrice || 10;
+                    autoUpgradePrice = data.autoUpgradePrice || 20;
+                    
+                    // Обновляем UI
+                    document.getElementById('clickPrice').textContent = clickUpgradePrice;
+                    document.getElementById('autoPrice').textContent = autoUpgradePrice;
+                    document.getElementById('clickLevel').textContent = `Ур. ${clickPower}`;
+                    document.getElementById('autoLevel').textContent = `Ур. ${autoCollectors}`;
+                    
+                    updateDisplay();
+                } catch (e) {}
+            }
+        }
+        
+        // Инициализация при загрузке
+        window.onload = function() {
+            initAudio();
+            loadGame();
+            
+            // Вешаем обработчик клика
+            const cranberry = document.getElementById('cranberry');
+            cranberry.addEventListener('click', clickCranberry);
+            
+            // Активируем звук по первому взаимодействию
+            document.body.addEventListener('touchstart', () => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }, { once: true });
+            
+            document.body.addEventListener('click', () => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }, { once: true });
+        };
+    </script>
+</body>
+</html>
