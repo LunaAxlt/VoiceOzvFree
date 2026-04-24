@@ -2,619 +2,279 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>LunaAxlt Studio Games — Техническое обслуживание</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бухгалтерия Pro — Система управления</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 30% 40%, #0a0c1a, #03050b);
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Окно входа */
+        #login-screen {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* Основной интерфейс */
+        #main-ui {
+            display: none;
+            width: 90%;
+            max-width: 1000px;
+            background: white;
             padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* Анимированный фон с частицами */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(76,111,255,0.4), rgba(155,77,255,0.2));
-            border-radius: 50%;
-            animation: floatParticle linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-20vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Луна эффект */
-        .moon-glow {
-            position: fixed;
-            top: -20%;
-            right: -10%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(100,80,200,0.2), transparent 70%);
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-            pointer-events: none;
-            animation: pulseGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.05); }
-        }
-
-        /* Основной контейнер */
-        .maintenance-container {
-            position: relative;
-            z-index: 10;
-            max-width: 650px;
-            width: 100%;
-            background: rgba(10, 12, 26, 0.75);
-            backdrop-filter: blur(20px);
-            border-radius: 64px;
-            padding: 48px 32px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(76,111,255,0.2);
-            border: 1px solid rgba(76,111,255,0.3);
-            transition: transform 0.3s ease;
-            text-align: center;
-        }
-
-        /* Логотип студии */
-        .studio-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .logo-icon {
-            font-size: 70px;
-            background: linear-gradient(135deg, #4C6FFF, #9B4DFF);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-            animation: floatLogo 3s ease-in-out infinite;
-        }
-
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .studio-name {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFFFFF, #B0B8FF);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-            margin-top: 8px;
-        }
-
-        .studio-tag {
-            font-size: 14px;
-            color: #8E94B2;
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-
-        /* Основной баннер */
-        .maintenance-badge {
-            background: linear-gradient(135deg, #FF4D4D, #B00020);
-            border-radius: 100px;
-            padding: 8px 24px;
-            display: inline-block;
-            margin-bottom: 32px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
-            color: white;
-            box-shadow: 0 0 20px rgba(255,77,77,0.3);
-        }
-
-        /* Заголовок */
-        .title {
-            font-size: 42px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            background: linear-gradient(135deg, #FFFFFF, #C0C8FF);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        @media (max-width: 550px) {
-            .title {
-                font-size: 28px;
-            }
-            .maintenance-container {
-                padding: 32px 20px;
-                border-radius: 48px;
-            }
-            .date-card {
-                padding: 20px 16px !important;
-            }
-            .countdown-number {
-                font-size: 32px !important;
-                min-width: 60px !important;
-            }
-            .countdown-item {
-                min-width: 70px !important;
-            }
-        }
-
-        /* Таймер обратного отсчета */
-        .countdown-section {
-            background: rgba(26, 30, 38, 0.7);
-            border-radius: 48px;
-            padding: 8px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(76,111,255,0.3);
-        }
-
-        .countdown-title {
-            text-align: center;
-            color: #9B4DFF;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-            margin-top: 8px;
-        }
-
-        .countdown-timer {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding: 8px 16px 24px;
-        }
-
-        .countdown-item {
-            text-align: center;
-            background: #0A0C12;
-            border-radius: 28px;
-            padding: 12px 8px;
-            min-width: 85px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            border: 1px solid rgba(76,111,255,0.3);
-        }
-
-        .countdown-number {
-            font-size: 44px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4C6FFF, #9B4DFF);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: monospace;
-            letter-spacing: 2px;
-        }
-
-        .countdown-label {
-            font-size: 12px;
-            color: #8E94B2;
-            text-transform: uppercase;
-            margin-top: 4px;
-            font-weight: 500;
-        }
-
-        /* Дата */
-        .date-card {
-            background: linear-gradient(135deg, rgba(76,111,255,0.1), rgba(155,77,255,0.05));
-            border-radius: 32px;
-            padding: 20px 24px;
-            text-align: center;
-            margin-bottom: 32px;
-            border: 1px dashed rgba(76,111,255,0.4);
-        }
-
-        .date-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: #FFFFFF;
-        }
-
-        .date-text i {
-            color: #FFD966;
-            margin-right: 8px;
-        }
-
-        .date-note {
-            color: #8E94B2;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        /* Прогресс-бар */
-        .progress-section {
-            margin-bottom: 32px;
-        }
-
-        .progress-label {
+        header {
             display: flex;
             justify-content: space-between;
-            color: #B0B8D0;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .progress-bar-bg {
-            background: #1A1E26;
-            border-radius: 30px;
-            height: 8px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #4C6FFF, #9B4DFF);
-            border-radius: 30px;
-            transition: width 0.5s ease;
-            box-shadow: 0 0 8px rgba(76,111,255,0.5);
-        }
-
-        /* Анимация загрузки */
-        @keyframes shine {
-            0% { background-position: -100% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 12px;
-            color: #5A607A;
-        }
-
-        /* Колокольчик */
-        .notification-bell {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1A1E26;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
             align-items: center;
-            justify-content: center;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
             cursor: pointer;
-            z-index: 50;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(76,111,255,0.4);
-            transition: 0.2s;
-        }
-
-        .notification-bell i {
+            font-weight: bold;
             font-size: 24px;
-            color: #FFD966;
+            color: var(--primary);
+            user-select: none;
         }
 
-        .notification-bell:active {
-            transform: scale(0.92);
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .tooltip {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: #0F1119;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: white;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            border: 1px solid #4C6FFF;
+        .stat-card {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
         }
 
-        .notification-bell:hover .tooltip {
-            opacity: 1;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        /* Адаптация для телефона */
-        @media (max-width: 480px) {
-            .notification-bell {
-                width: 48px;
-                height: 48px;
-                bottom: 20px;
-                right: 20px;
-            }
-            .notification-bell i {
-                font-size: 20px;
-            }
-            .tooltip {
-                font-size: 10px;
-                bottom: 60px;
-                white-space: nowrap;
-            }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-right: 2px;
+            transition: 0.3s;
+        }
+
+        .btn-pay { background: var(--success); color: white; }
+        .btn-bonus { background: var(--accent); color: white; }
+        .btn-fine { background: #f39c12; color: white; }
+        .btn-fire { background: var(--danger); color: white; }
+
+        /* Логи */
+        #logs-section {
+            display: none;
+            margin-top: 20px;
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+
+        .hire-form {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-<div class="particles" id="particlesContainer"></div>
-<div class="moon-glow"></div>
-
-<div class="maintenance-container">
-    <div class="studio-header">
-        <div class="logo-icon">
-            <i class="fas fa-moon"></i>
-            <i class="fas fa-gamepad" style="margin-left: -12px;"></i>
-        </div>
-        <h1 class="studio-name">LunaAxlt Studio</h1>
-        <div class="studio-tag">GAMES · INNOVATION · UNIVERSE</div>
+    <div id="login-screen">
+        <h2>Доступ ограничен</h2>
+        <input type="password" id="pass-input" placeholder="Введите пароль">
+        <br><br>
+        <button onclick="login()" style="background: var(--primary); color: white; padding: 10px 20px;">Войти</button>
     </div>
 
-    <div>
-        <div class="maintenance-badge">
-            <i class="fas fa-tools"></i> ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ
-        </div>
-        <h2 class="title">
-            Все сервисы на обновлении
-        </h2>
-    </div>
+    <div id="main-ui">
+        <header>
+            <div class="logo" onclick="toggleLogs()" title="Нажмите для просмотра логов">💼 Бухгалтерия.РФ</div>
+            <div>Статус: <strong>Администратор</strong></div>
+        </header>
 
-    <!-- Таймер обратного отсчета до 30 марта 2026 -->
-    <div class="countdown-section">
-        <div class="countdown-title">
-            <i class="fas fa-hourglass-half"></i> ДО ЗАВЕРШЕНИЯ ОБСЛУЖИВАНИЯ
+        <div class="stats-bar">
+            <div class="stat-card">Баланс фирмы: <br><strong id="total-balance">1,000,000</strong> ₽</div>
+            <div class="stat-card">Штат: <br><strong id="emp-count">0</strong> чел.</div>
+            <div class="stat-card">Выплачено сегодня: <br><strong id="total-spent">0</strong> ₽</div>
         </div>
-        <div class="countdown-timer" id="countdownTimer">
-            <div class="countdown-item">
-                <div class="countdown-number" id="days">00</div>
-                <div class="countdown-label">Дней</div>
-            </div>
-            <div class="countdown-item">
-                <div class="countdown-number" id="hours">00</div>
-                <div class="countdown-label">Часов</div>
-            </div>
-            <div class="countdown-item">
-                <div class="countdown-number" id="minutes">00</div>
-                <div class="countdown-label">Минут</div>
-            </div>
-            <div class="countdown-item">
-                <div class="countdown-number" id="seconds">00</div>
-                <div class="countdown-label">Секунд</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Дата -->
-    <div class="date-card">
-        <div class="date-text">
-            <i class="fas fa-calendar-alt"></i> 30 марта 2026 года
+        <table>
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Должность</th>
+                    <th>Зарплата</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="employee-list">
+                </tbody>
+        </table>
+
+        <div class="hire-form">
+            <h3>Нанять сотрудника</h3>
+            <input type="text" id="new-name" placeholder="Имя Фамилия">
+            <input type="text" id="new-pos" placeholder="Должность">
+            <input type="number" id="new-sal" placeholder="Оклад">
+            <button onclick="hire()" class="btn-pay">Добавить в штат</button>
         </div>
-        <div class="date-note">
-            ⚡ Все сервисы возобновят работу в 00:00 по московскому времени
+
+        <div id="logs-section">
+            <strong>-- СИСТЕМНЫЕ ЛОГИ --</strong><br>
+            <div id="logs-content"></div>
         </div>
     </div>
 
-    <!-- Прогресс обслуживания (динамический) -->
-    <div class="progress-section">
-        <div class="progress-label">
-            <span><i class="fas fa-chart-line"></i> Прогресс обновления</span>
-            <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-label" style="margin-top: 8px; font-size: 12px;">
-            <span>🔧 Подготовка серверов</span>
-            <span>✨ Новый контент</span>
-        </div>
-    </div>
+    <script>
+        let balance = 1000000;
+        let spent = 0;
+        let employees = [
+            { id: 1, name: "Иван Иванов", pos: "Менеджер", salary: 55000 },
+            { id: 2, name: "Анна Смирнова", pos: "Дизайнер", salary: 70000 }
+        ];
 
-    <footer>
-        <p>© 2026 LunaAxlt Studio Games — Мы делаем игры, которые вдохновляют.</p>
-        <p style="margin-top: 6px;">Скоро вернёмся с обновлениями</p>
-    </footer>
-</div>
-
-<div class="notification-bell" id="notifyBell">
-    <i class="fas fa-bell"></i>
-    <div class="tooltip">Уведомить о запуске</div>
-</div>
-
-<script>
-    // Дата окончания обслуживания: 30 марта 2026 года 00:00:00 по МСК
-    const targetDate = new Date(2026, 2, 30, 0, 0, 0); // Март = 2 (0-index)
-    
-    // Функция обновления таймера
-    function updateCountdown() {
-        const now = new Date();
-        const diff = targetDate - now;
-        
-        if (diff <= 0) {
-            // Обслуживание завершено
-            document.getElementById('days').innerText = '00';
-            document.getElementById('hours').innerText = '00';
-            document.getElementById('minutes').innerText = '00';
-            document.getElementById('seconds').innerText = '00';
-            document.querySelector('.countdown-title').innerHTML = '<i class="fas fa-check-circle"></i> ОБСЛУЖИВАНИЕ ЗАВЕРШЕНО!';
-            document.querySelector('.maintenance-badge').innerHTML = '<i class="fas fa-check"></i> ВСЕ СЕРВИСЫ РАБОТАЮТ';
-            document.querySelector('.maintenance-badge').style.background = 'linear-gradient(135deg, #00B894, #00A86B)';
-            clearInterval(countdownInterval);
-            return;
+        function login() {
+            const pass = document.getElementById('pass-input').value;
+            if (pass === "1234") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-ui').style.display = 'block';
+                render();
+                addLog("Вход в систему выполнен");
+            } else {
+                alert("Неверный пароль!");
+            }
         }
-        
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        document.getElementById('days').innerText = days.toString().padStart(2, '0');
-        document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
-        
-        // Обновление прогресса (чем ближе дата, тем выше процент)
-        const startDate = new Date(2025, 11, 15, 0, 0, 0); // условное начало работ 15 декабря 2025
-        const totalDuration = targetDate - startDate;
-        const elapsed = now - startDate;
-        let percent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-        if (isNaN(percent)) percent = 0;
-        const progressPercentSpan = document.getElementById('progressPercent');
-        const progressFill = document.getElementById('progressFill');
-        if (progressPercentSpan && progressFill) {
-            progressPercentSpan.innerText = Math.floor(percent) + '%';
-            progressFill.style.width = percent + '%';
+
+        function render() {
+            const list = document.getElementById('employee-list');
+            list.innerHTML = "";
+            employees.forEach(emp => {
+                list.innerHTML += `
+                    <tr>
+                        <td>${emp.name}</td>
+                        <td>${emp.pos}</td>
+                        <td>${emp.salary} ₽</td>
+                        <td>
+                            <button class="btn-pay" onclick="action(${emp.id}, 'Выплата з/п', ${emp.salary})">Зарплата</button>
+                            <button class="btn-bonus" onclick="action(${emp.id}, 'Премия')">Премия</button>
+                            <button class="btn-fine" onclick="action(${emp.id}, 'Штраф')">Штраф</button>
+                            <button class="btn-fire" onclick="fire(${emp.id})">Уволить</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('total-balance').innerText = balance.toLocaleString();
+            document.getElementById('total-spent').innerText = spent.toLocaleString();
+            document.getElementById('emp-count').innerText = employees.length;
         }
-    }
-    
-    let countdownInterval = setInterval(updateCountdown, 1000);
-    updateCountdown();
-    
-    // Генерация фоновых частиц
-    function createParticles() {
-        const container = document.getElementById('particlesContainer');
-        const particleCount = 80;
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            const size = Math.random() * 6 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = Math.random() * 8 + 5 + 's';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            particle.style.opacity = Math.random() * 0.5 + 0.2;
-            container.appendChild(particle);
-        }
-    }
-    createParticles();
-    
-    // Уведомление (колокольчик)
-    const bell = document.getElementById('notifyBell');
-    if (bell) {
-        bell.addEventListener('click', () => {
-            // Создаем toast уведомление
-            const toast = document.createElement('div');
-            toast.innerText = '🔔 Мы сообщим, когда всё будет готово! Следите за новостями.';
-            toast.style.position = 'fixed';
-            toast.style.bottom = '100px';
-            toast.style.right = '20px';
-            toast.style.backgroundColor = '#1A1E26';
-            toast.style.color = '#FFFFFF';
-            toast.style.padding = '12px 20px';
-            toast.style.borderRadius = '30px';
-            toast.style.fontSize = '14px';
-            toast.style.zIndex = '1000';
-            toast.style.borderLeft = '4px solid #4C6FFF';
-            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-            toast.style.backdropFilter = 'blur(8px)';
-            toast.style.fontFamily = 'Inter, sans-serif';
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+
+        function action(id, type, amount = 0) {
+            const emp = employees.find(e => e.id === id);
+            let val = amount || prompt(`Введите сумму для операции: ${type}`);
+            if (!val || isNaN(val)) return;
+
+            let reason = prompt("Укажите причину:");
+            if (!reason) reason = "Не указана";
+
+            val = parseInt(val);
             
-            // Анимация колокольчика
-            bell.style.transform = 'scale(0.9)';
-            setTimeout(() => { bell.style.transform = ''; }, 150);
-        });
-    }
-    
-    // Добавляем анимированный заголовок
-    const style = document.createElement('style');
-    style.textContent = `
-        .maintenance-container {
-            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
+            if (type === 'Штраф') {
+                balance += val;
+                addLog(`[${type}] ${emp.name}: +${val} ₽. Причина: ${reason}`);
+            } else {
+                balance -= val;
+                spent += val;
+                addLog(`[${type}] ${emp.name}: -${val} ₽. Причина: ${reason}`);
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            
+            render();
+        }
+
+        function hire() {
+            const name = document.getElementById('new-name').value;
+            const pos = document.getElementById('new-pos').value;
+            const sal = document.getElementById('new-sal').value;
+
+            if (name && pos && sal) {
+                employees.push({ id: Date.now(), name, pos, salary: parseInt(sal) });
+                addLog(`[НАЙМ] Новый сотрудник: ${name} (${pos})`);
+                render();
+                document.getElementById('new-name').value = "";
+                document.getElementById('new-pos').value = "";
+                document.getElementById('new-sal').value = "";
             }
         }
-        .countdown-item {
-            transition: transform 0.2s;
+
+        function fire(id) {
+            const emp = employees.find(e => e.id === id);
+            let reason = prompt(`Причина увольнения ${emp.name}:`);
+            if (reason) {
+                addLog(`[УВОЛЬНЕНИЕ] ${emp.name} покинул компанию. Причина: ${reason}`);
+                employees = employees.filter(e => e.id !== id);
+                render();
+            }
         }
-        .countdown-item:hover {
-            transform: scale(1.02);
+
+        function addLog(msg) {
+            const content = document.getElementById('logs-content');
+            const time = new Date().toLocaleTimeString();
+            content.innerHTML = `> [${time}] ${msg}<br>` + content.innerHTML;
         }
-    `;
-    document.head.appendChild(style);
-    
-    // Динамическое обновление заголовка вкладки
-    function updateTabTitle() {
-        const now = new Date();
-        const diff = targetDate - now;
-        if (diff > 0) {
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            document.title = `🔧 Обновление: ${days} дн. | LunaAxlt Studio`;
-        } else {
-            document.title = `✨ LunaAxlt Studio — Игры доступны!`;
+
+        function toggleLogs() {
+            const logs = document.getElementById('logs-section');
+            logs.style.display = logs.style.display === 'block' ? 'none' : 'block';
         }
-    }
-    setInterval(updateTabTitle, 60000);
-    updateTabTitle();
-    
-    // Эффект мерцания для логотипа
-    setInterval(() => {
-        const logoIcon = document.querySelector('.logo-icon');
-        if (logoIcon) {
-            logoIcon.style.textShadow = '0 0 15px rgba(76,111,255,0.5)';
-            setTimeout(() => {
-                if (logoIcon) logoIcon.style.textShadow = '';
-            }, 300);
-        }
-    }, 3000);
-    
-    // Консольное приветствие
-    console.log('%c✨ LunaAxlt Studio Games ✨', 'color: #9B4DFF; font-size: 16px; font-weight: bold;');
-    console.log('%cТехническое обслуживание до 30 марта 2026. Готовим нечто невероятное!', 'color: #4C6FFF; font-size: 12px;');
-</script>
+    </script>
 </body>
 </html>
